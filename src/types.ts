@@ -100,3 +100,4 @@ export type Room = {
   roomId: number;
   roomUsers: RoomUser[];
 };
+export type Position = { x: number; y: number };

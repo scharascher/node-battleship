@@ -16,14 +16,16 @@ export const addUserToRoomHandler = (
   const game = databaseInstance.createGame(room);
   wsUpdateRoom();
   wsServer.clients.forEach((client) => {
+    const userIds = Object.keys(game.players).map((k) => +k);
     const user = databaseInstance.getUserByWs(client);
-    wsSend(client, {
-      type: 'create_game',
-      id: 0,
-      data: {
-        idGame: game.id,
-        idPlayer: user.id,
-      },
-    });
+    if (userIds.includes(user.id))
+      wsSend(client, {
+        type: 'create_game',
+        id: 0,
+        data: {
+          idGame: game.id,
+          idPlayer: user.id,
+        },
+      });
   });
 };

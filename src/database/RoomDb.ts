@@ -17,11 +17,4 @@ export class RoomDb {
     room.roomUsers.push({ name: user.name, index: user.id });
     return room;
   }
-  removeRoom(index: number) {
-    this._rooms.splice(index, 1);
-    return this;
-  }
-  getRoom(index: number) {
-    return this._rooms[index];
-  }
 }

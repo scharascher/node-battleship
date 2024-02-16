@@ -1,5 +1,5 @@
 import { UserDb } from './UserDb';
-import { Room, Ship, User, Winner } from '../types';
+import { AttackStatus, Position, Room, Ship, User, Winner } from '../types';
 import { RoomDb } from './RoomDb';
 import WebSocket from 'ws';
 import { GameDb } from './GameDb';
@@ -39,7 +39,12 @@ export class Database {
     return this.gameDb.getGame(gameId);
   }
   addShips(gameId: number, userId: number, ships: Ship[]) {
-    return this.gameDb.addShips(gameId, userId, ships);
+    return this.gameDb.getGame(gameId)?.addShips(userId, ships);
+  }
+  attack(gameId: number, attackerId: number, position: Position): AttackStatus {
+    const game = this.gameDb.getGame(gameId);
+    if (!game) return 'miss';
+    return game.attack(attackerId, position);
   }
   private updateWinners() {
     this._winners = this.userDb.users.map((u) => ({
