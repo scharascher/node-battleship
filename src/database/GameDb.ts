@@ -1,5 +1,6 @@
 import { AttackStatus, Position, Room, Ship } from '../types';
 import { getVictimId } from '../commandHandlers/utils';
+import { makeField } from '../utils';
 
 export type FieldCell = {
   hasShip: boolean;
@@ -12,22 +13,32 @@ export type GamePlayer = {
   field: Field;
 };
 export interface IGame {
+  turnId: number;
   id: number;
+  finished: boolean;
+  winnerId?: number;
   players: Record<number, GamePlayer>;
 }
-class Game implements IGame {
+export class Game implements IGame {
   public players: Record<number, GamePlayer>;
+  public turnId: number;
+  public finished = false;
+  public winnerId?: number = undefined;
   constructor(
     public id: number,
     players: Record<number, Ship[]>,
   ) {
     this.players = {};
+    this.turnId = +Object.keys(players)[0]!;
     Object.entries(players).forEach(([id, ships]) => {
       this.players[+id] = {
         ships: ships.map((s) => ({ ...s, killed: false })),
-        field: this.makeField(),
+        field: makeField(),
       };
     });
+  }
+  setCurrentTurnId(userId: number) {
+    this.turnId = userId;
   }
   addShips(userId: number, ships: Ship[]) {
     const gamePlayer = this.players[userId];
@@ -64,17 +75,12 @@ class Game implements IGame {
         }
       }
     }
-    return killed ? 'killed' : 'shot';
-  }
-  private makeField() {
-    const field: Field = [];
-    for (let i = 0; i < 10; i++) {
-      field[i] = [];
-      for (let j = 0; j < 10; j++) {
-        field[i]![j] = { hasShip: false, checked: false, shipIndex: undefined };
-      }
+    ship.killed = killed;
+    if (victim.ships.every((s) => s.killed)) {
+      this.finished = true;
+      this.winnerId = attackerId;
     }
-    return field;
+    return killed ? 'killed' : 'shot';
   }
   private placeShips(gamePlayer: GamePlayer) {
     gamePlayer.ships.forEach((ship, index) => {

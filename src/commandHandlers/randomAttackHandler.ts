@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import { WSRequest } from '../types';
 import { databaseInstance } from '../database';
-import { getRandomPosition } from './utils';
+import { getRandomPosition, getVictimId } from './utils';
 import { attackHandler } from './attackHandler';
 
 export const randomAttackHandler = (
@@ -10,7 +10,9 @@ export const randomAttackHandler = (
 ) => {
   const game = databaseInstance.getGame(request.data.gameId);
   if (!game) return;
-  const position = getRandomPosition(game, request.data.indexPlayer);
+  const victimId = +getVictimId(game, request.data.indexPlayer)!;
+  const field = game.players[victimId]!.field;
+  const position = getRandomPosition(field);
   attackHandler(ws, {
     id: 0,
     type: 'attack',

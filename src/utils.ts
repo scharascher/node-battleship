@@ -1,6 +1,7 @@
 import { WSRequest, WSResponse, WSResponseType } from './types';
 import WebSocket from 'ws';
 import { wsServer } from './wsServer';
+import { Field } from './database/GameDb';
 
 export const getRequest = (data: WebSocket.RawData) => {
   const request: WSRequest<any> = JSON.parse(data.toString());
@@ -10,6 +11,16 @@ export const getRequest = (data: WebSocket.RawData) => {
   };
 };
 
+export const makeField = () => {
+  const field: Field = [];
+  for (let i = 0; i < 10; i++) {
+    field[i] = [];
+    for (let j = 0; j < 10; j++) {
+      field[i]![j] = { hasShip: false, checked: false, shipIndex: undefined };
+    }
+  }
+  return field;
+};
 export const sendAll = <T extends WSResponseType>(message: WSResponse<T>) => {
   wsServer.clients.forEach(function (client) {
     client.send(stringifyResponse(message));

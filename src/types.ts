@@ -91,7 +91,7 @@ export type Ship = {
   type: ShipType;
 };
 export type User = { name: string; password: string; id: number; wins: 0 };
-export type Winner = { name: string; wins: number };
+export type Winner = { user: User; wins: number };
 export type RoomUser = {
   name: string;
   index: number;

@@ -19,6 +19,11 @@ export class Database {
   getUserByWs(ws: WebSocket) {
     return this._userByWs.get(ws)!;
   }
+  updateWinner(id: number) {
+    const winner = this._winners.find((w) => w.user.id === id);
+    if (!winner) return;
+    winner.wins++;
+  }
   get winners() {
     return this._winners;
   }
@@ -49,7 +54,7 @@ export class Database {
   private updateWinners() {
     this._winners = this.userDb.users.map((u) => ({
       wins: u.wins,
-      name: u.name,
+      user: u,
     }));
   }
 }
