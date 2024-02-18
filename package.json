@@ -11,8 +11,7 @@
   "scripts": {
     "start:dev": "nodemon --enable-source-maps ./src/index.ts",
     "start:prod": "tsc && node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' ./dist/index.js",
-    "tsc": "tsc --noEmit --watch",
-    "test": "jest --verbose"
+    "tsc": "tsc --noEmit --watch"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.10",

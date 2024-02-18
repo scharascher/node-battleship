@@ -1,5 +1,5 @@
 import { UserDb } from './UserDb';
-import { AttackStatus, Position, Room, Ship, User, Winner } from '../types';
+import { Position, Room, Ship, User, Winner } from '../types';
 import { RoomDb } from './RoomDb';
 import WebSocket from 'ws';
 import { GameDb } from './GameDb';
@@ -22,7 +22,10 @@ export class Database {
   updateWinner(id: number) {
     const winner = this._winners.find((w) => w.user.id === id);
     if (!winner) return;
-    winner.wins++;
+    const user = this.userDb.users[winner.user.id];
+    if (!user) return;
+    user.wins++;
+    this.updateWinners();
   }
   get winners() {
     return this._winners;
@@ -38,7 +41,9 @@ export class Database {
     return room;
   }
   createGame(room: Room) {
-    return this.gameDb.createGame(room);
+    const game = this.gameDb.createGame(room);
+    this.roomDb.removeRoom(room.roomId);
+    return game;
   }
   getGame(gameId: number) {
     return this.gameDb.getGame(gameId);
@@ -46,16 +51,18 @@ export class Database {
   addShips(gameId: number, userId: number, ships: Ship[]) {
     return this.gameDb.getGame(gameId)?.addShips(userId, ships);
   }
-  attack(gameId: number, attackerId: number, position: Position): AttackStatus {
+  attack(gameId: number, attackerId: number, position: Position) {
     const game = this.gameDb.getGame(gameId);
     if (!game) return 'miss';
     return game.attack(attackerId, position);
   }
   private updateWinners() {
-    this._winners = this.userDb.users.map((u) => ({
-      wins: u.wins,
-      user: u,
-    }));
+    this._winners = this.userDb.users
+      .map((u) => ({
+        wins: u.wins,
+        user: u,
+      }))
+      .sort((a, b) => b.wins - a.wins);
   }
 }
 

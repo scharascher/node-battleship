@@ -48,15 +48,16 @@ export class Game implements IGame {
     }
     return this;
   }
-  attack(attackerId: number, { x, y }: Position): AttackStatus {
+  attack(attackerId: number, { x, y }: Position): AttackStatus | null {
     const victimId = getVictimId(this, attackerId);
     if (victimId == null) return 'miss';
     const victim = this.players[+victimId];
     if (!victim) return 'miss';
-    if (!victim.field[x]?.[y]?.hasShip) return 'miss';
-    const cell = victim.field[x]![y]!;
-    const shipIndex = cell.shipIndex as number;
+    const cell = victim.field[x]?.[y];
+    if (!cell || cell?.checked) return null;
     cell.checked = true;
+    if (!cell.hasShip) return 'miss';
+    const shipIndex = cell.shipIndex as number;
     const ship = victim.ships[shipIndex];
     if (!ship) return 'miss';
     let killed = true;

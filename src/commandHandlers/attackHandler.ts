@@ -17,6 +17,7 @@ export const attackHandler = (ws: WebSocket, request: WSRequest<'attack'>) => {
     request.data.indexPlayer,
     position,
   );
+  if (!status) return;
   if (game.finished) {
     databaseInstance.updateWinner(game.winnerId!);
     wsUpdateWinners();

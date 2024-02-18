@@ -13,6 +13,7 @@ export const addUserToRoomHandler = (
     currentUser,
     request.data.indexRoom,
   );
+  if (!room) return;
   const game = databaseInstance.createGame(room);
   wsUpdateRoom();
   wsServer.clients.forEach((client) => {

@@ -6,6 +6,7 @@ import { addUserToRoomHandler } from './commandHandlers/addUserToRoomHandler';
 import { addShipsHandler } from './commandHandlers/addShipsHandler';
 import { attackHandler } from './commandHandlers/attackHandler';
 import { randomAttackHandler } from './commandHandlers/randomAttackHandler';
+import { singlePlayHandler } from './commandHandlers/singlePlayHandler';
 
 wsServer.on('connection', (ws) => {
   console.log('New client connected!');
@@ -32,6 +33,9 @@ wsServer.on('connection', (ws) => {
         }
         case 'randomAttack': {
           return randomAttackHandler(ws, request);
+        }
+        case 'single_play': {
+          return singlePlayHandler(ws, request);
         }
       }
     } catch (e) {

@@ -10,11 +10,13 @@ export type WSRequestType =
   | 'add_user_to_room'
   | 'add_ships'
   | 'attack'
-  | 'randomAttack';
+  | 'randomAttack'
+  | 'single_play';
 
 export type WSRequestDataType = {
   reg: { name: string; password: string };
   create_room: string;
+  single_play: string;
   add_user_to_room: {
     indexRoom: number;
   };
@@ -90,7 +92,7 @@ export type Ship = {
   length: number;
   type: ShipType;
 };
-export type User = { name: string; password: string; id: number; wins: 0 };
+export type User = { name: string; password: string; id: number; wins: number };
 export type Winner = { user: User; wins: number };
 export type RoomUser = {
   name: string;
