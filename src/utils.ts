@@ -1,9 +1,10 @@
 import { WSRequest, WSResponse, WSResponseType } from './types';
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 import { wsServer } from './wsServer';
 import { Field } from './database/GameDb';
 
 export const getRequest = (data: WebSocket.RawData) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const request: WSRequest<any> = JSON.parse(data.toString());
   return {
     ...request,
@@ -27,6 +28,7 @@ export const sendAll = <T extends WSResponseType>(message: WSResponse<T>) => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const stringifyResponse = (data: WSResponse<any>) => {
   return JSON.stringify({ ...data, data: JSON.stringify(data.data) });
 };

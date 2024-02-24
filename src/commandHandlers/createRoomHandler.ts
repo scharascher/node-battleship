@@ -1,6 +1,6 @@
 import { databaseInstance } from '../database';
 import { wsUpdateRoom } from './utils';
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 
 export const createRoomHandler = (ws: WebSocket) => {
   const user = databaseInstance.getUserByWs(ws);

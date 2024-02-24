@@ -1,7 +1,7 @@
 import { UserDb } from './UserDb';
 import { Position, Room, Ship, User, Winner } from '../types';
 import { RoomDb } from './RoomDb';
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 import { GameDb } from './GameDb';
 
 export class Database {

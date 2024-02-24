@@ -1,5 +1,5 @@
 import { Position, WSResponse, WSResponseType } from '../types';
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 import { databaseInstance } from '../database';
 import { sendAll, stringifyResponse } from '../utils';
 import { Field, FieldCell, IGame } from '../database/GameDb';

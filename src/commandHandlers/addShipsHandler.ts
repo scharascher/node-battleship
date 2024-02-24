@@ -1,5 +1,5 @@
 import { databaseInstance } from '../database';
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 import { WSRequest } from '../types';
 import { IGame } from '../database/GameDb';
 import { wsServer } from '../wsServer';
