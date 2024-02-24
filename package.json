@@ -7,16 +7,16 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "type": "module",
   "scripts": {
-    "start:dev": "nodemon --enable-source-maps ./src/index.ts",
-    "start:prod": "tsc && node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' ./dist/index.js",
-    "tsc": "tsc --noEmit --watch"
+    "start:dev": "nodemon --enable-source-maps",
+    "start:prod": "tsc && node ./dist/index.js",
+    "test": "jest --verbose"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.10",
-    "@babel/preset-env": "^7.23.9",
-    "@babel/preset-typescript": "^7.23.3",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
+    "@types/dotenv": "^8.2.0",
     "@types/jest": "^29.5.2",
     "@types/lodash": "^4.14.195",
     "@types/node": "^20.3.1",

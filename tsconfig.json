@@ -4,13 +4,16 @@
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "lib": ["ESNext"],
-    "module": "ES2020",
+    "lib": ["ESNext", "DOM"],
+    "module": "CommonJS",
+    "declaration": true,
+    "declarationDir": "dist/types",
     "moduleResolution": "Node",
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noImplicitAny": true,
     "outDir": "dist",
     "removeComments": true,
     "resolveJsonModule": true,
@@ -18,10 +21,6 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "target": "ES2015"
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
+    "target": "ES2020"
   }
 }

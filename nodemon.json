@@ -1,10 +1,6 @@
 {
-  "watch": [
-    "src"
-  ],
-  "ext": "ts",
-  "ignore": ["src/**/*.test.ts"],
-  "execMap": {
-    "ts": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));'"
-  }
+  "watch": ["src"],
+  "ext": ".ts",
+  "ignore": [],
+  "exec": "npx ts-node ./src/index.ts"
 }
