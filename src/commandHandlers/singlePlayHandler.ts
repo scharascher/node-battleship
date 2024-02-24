@@ -1,4 +1,4 @@
-import * as WebSocket from 'ws';
+import { WebSocket } from 'ws';
 import { WSRequest } from '../types';
 
 export const singlePlayHandler = (

@@ -1,4 +1,4 @@
-import * as WebSocket from 'ws';
+import { WebSocket } from 'ws';
 import { WSRequest } from '../types';
 import { databaseInstance } from '../database';
 import { wsFinished, wsSend, wsTurn, wsUpdateWinners } from './utils';

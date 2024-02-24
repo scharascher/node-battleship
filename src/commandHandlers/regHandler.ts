@@ -1,7 +1,7 @@
 import { WSRequest } from '../types';
 import { databaseInstance } from '../database';
 import { wsSend, wsUpdateRoom, wsUpdateWinners } from './utils';
-import * as WebSocket from 'ws';
+import { WebSocket } from 'ws';
 
 export const regHandler = (ws: WebSocket, request: WSRequest<'reg'>) => {
   const {

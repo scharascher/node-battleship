@@ -1,9 +1,9 @@
 import { WSRequest, WSResponse, WSResponseType } from './types';
-import * as WebSocket from 'ws';
+import { RawData } from 'ws';
 import { wsServer } from './wsServer';
 import { Field } from './database/GameDb';
 
-export const getRequest = (data: WebSocket.RawData) => {
+export const getRequest = (data: RawData) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const request: WSRequest<any> = JSON.parse(data.toString());
   return {
