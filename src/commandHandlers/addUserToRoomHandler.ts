@@ -1,7 +1,7 @@
 import { databaseInstance } from '../database';
 import { WebSocket } from 'ws';
 import { WSRequest } from '../types';
-import { sendCreateGame, wsUpdateRoom } from './utils';
+import { sendCreateGame, wsUpdateRooms } from './utils';
 import { wsServer } from '../wsServer';
 
 export const addUserToRoomHandler = (
@@ -15,7 +15,7 @@ export const addUserToRoomHandler = (
   );
   if (!room) return;
   const game = databaseInstance.createGame(room);
-  wsUpdateRoom();
+  wsUpdateRooms();
   wsServer.clients.forEach((client) => {
     const userIds = game.userIds;
     const user = databaseInstance.getUserByWs(client);

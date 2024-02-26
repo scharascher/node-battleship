@@ -52,6 +52,9 @@ export class Database {
     this.roomDb.removeRoom(room.roomId);
     return game;
   }
+  removeUserRooms(userId: number) {
+    this.roomDb.removeUserRooms(userId);
+  }
   getGame(gameId: number) {
     return this.gameDb.getGame(gameId);
   }

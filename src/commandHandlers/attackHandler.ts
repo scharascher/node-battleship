@@ -51,31 +51,35 @@ export const attackHandler = (ws: WebSocket, request: WSRequest<'attack'>) => {
     });
     wsTurn(client, game.turnId);
   });
-
-  while (nextUserId === BOT_ID) {
-    const victimId = indexPlayer;
-    const field = game.players[victimId]!.field;
-    const position = getRandomPosition(field);
-    const status = databaseInstance.attack(gameId, BOT_ID, position);
-    if (!status) return;
-    if (game.finished) {
-      databaseInstance.updateWinner(game.winnerId!);
-      wsUpdateWinners();
-      return wsFinished(game);
-    }
-    nextUserId = status === 'miss' ? indexPlayer : BOT_ID;
-    if (nextUserId != null) {
-      game.setCurrentTurnId(+nextUserId);
-    }
-    wsSend(ws, {
-      type: 'attack',
-      id: 0,
-      data: {
-        position,
-        currentPlayer: BOT_ID,
-        status,
-      },
-    });
-    wsTurn(ws, game.turnId);
-  }
+  setTimeout(
+    () => {
+      while (nextUserId === BOT_ID) {
+        const victimId = indexPlayer;
+        const field = game.players[victimId]!.field;
+        const position = getRandomPosition(field);
+        const status = databaseInstance.attack(gameId, BOT_ID, position);
+        if (!status) return;
+        if (game.finished) {
+          databaseInstance.updateWinner(game.winnerId!);
+          wsUpdateWinners();
+          return wsFinished(game);
+        }
+        nextUserId = status === 'miss' ? indexPlayer : BOT_ID;
+        if (nextUserId != null) {
+          game.setCurrentTurnId(+nextUserId);
+        }
+        wsSend(ws, {
+          type: 'attack',
+          id: 0,
+          data: {
+            position,
+            currentPlayer: BOT_ID,
+            status,
+          },
+        });
+        wsTurn(ws, game.turnId);
+      }
+    },
+    1000 + Math.random() * 1000,
+  );
 };

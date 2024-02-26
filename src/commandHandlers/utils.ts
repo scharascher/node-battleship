@@ -12,7 +12,7 @@ export const wsSend = <T extends WSResponseType>(
   console.log(`Send ${data.type} with data: `, data.data);
   ws.send(stringifyResponse(data));
 };
-export const wsUpdateRoom = () => {
+export const wsUpdateRooms = () => {
   sendAll({
     type: 'update_room',
     id: 0,

@@ -32,7 +32,7 @@ export class RoomDb {
     this._rooms[id]!.deleted = true;
   }
 
-  private removeUserRooms(userId: number) {
+  removeUserRooms(userId: number) {
     this._rooms.forEach((r, index) => {
       if (r.roomUsers.find((roomUser) => roomUser.index === userId)) {
         this._rooms[index]!.deleted = true;

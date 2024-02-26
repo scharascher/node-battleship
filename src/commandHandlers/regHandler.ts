@@ -1,6 +1,6 @@
 import { User, WSRequest } from '../types';
 import { databaseInstance } from '../database';
-import { wsSend, wsUpdateRoom, wsUpdateWinners } from './utils';
+import { wsSend, wsUpdateRooms, wsUpdateWinners } from './utils';
 import { WebSocket } from 'ws';
 
 export const regHandler = (ws: WebSocket, request: WSRequest<'reg'>) => {
@@ -28,6 +28,6 @@ export const regHandler = (ws: WebSocket, request: WSRequest<'reg'>) => {
     id: 0,
     data: { name, index: user.id, error: false, errorText: '' },
   });
-  wsUpdateRoom();
+  wsUpdateRooms();
   wsUpdateWinners();
 };
