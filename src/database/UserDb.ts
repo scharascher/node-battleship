@@ -12,4 +12,11 @@ export class UserDb {
     });
     return this.users[this.users.length - 1]!;
   }
+
+  getUser(name: string, password: string) {
+    const user = this.users.find((u) => u.name === name);
+    if (!user) return undefined;
+    if (user.password !== password) throw 'Invalid password';
+    return user;
+  }
 }

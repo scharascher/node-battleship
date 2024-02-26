@@ -40,7 +40,7 @@ wsServer.on('connection', (ws) => {
       }
     } catch (e) {
       if (e instanceof Error) {
-        console.log(e, e.stack);
+        console.error(e, e.stack);
       } else {
         console.dir(e);
       }

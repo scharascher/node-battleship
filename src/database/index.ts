@@ -10,6 +10,13 @@ export class Database {
   private roomDb: RoomDb = new RoomDb();
   private gameDb: GameDb = new GameDb();
   private _userByWs = new Map<WebSocket, User>();
+  getUser(ws: WebSocket, name: string, password: string) {
+    const user = this.userDb.getUser(name, password);
+    if (user) {
+      this._userByWs.set(ws, user);
+    }
+    return user;
+  }
   addUser(ws: WebSocket, name: string, password: string) {
     const user = this.userDb.addUser(name, password);
     this._userByWs.set(ws, user);
