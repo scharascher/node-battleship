@@ -1,19 +1,24 @@
 import { User, Room } from '../types';
 export class RoomDb {
-  private _rooms: Array<Room & { deleted: boolean }> = [];
+  private _rooms: Array<Room & { deleted: boolean; singlePlay: boolean }> = [];
+  constructor() {
+    this._rooms = [];
+  }
   get visibleRooms() {
     return this._rooms
       .filter((r) => r.roomUsers.length < 2 && !r.deleted)
       .map((r) => ({ roomUsers: r.roomUsers, roomId: r.roomId }));
   }
-  addRoom(user: User) {
+  addRoom(user: User, options?: { singlePlay: boolean }) {
     this._rooms.push({
       roomId: this._rooms.length,
       roomUsers: [],
       deleted: false,
+      singlePlay: !!(options && options.singlePlay),
     });
     const room = this._rooms[this._rooms.length - 1]!;
     this.addUserToRoom(user, room.roomId);
+    return room;
   }
   addUserToRoom(user: User, roomId: number) {
     const room = this._rooms[roomId]!;

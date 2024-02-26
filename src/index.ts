@@ -35,7 +35,7 @@ wsServer.on('connection', (ws) => {
           return randomAttackHandler(ws, request);
         }
         case 'single_play': {
-          return singlePlayHandler(ws, request);
+          return singlePlayHandler(ws);
         }
       }
     } catch (e) {

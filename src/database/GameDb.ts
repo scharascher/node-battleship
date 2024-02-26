@@ -1,6 +1,8 @@
 import { AttackStatus, Position, Room, Ship } from '../types';
 import { getVictimId } from '../commandHandlers/utils';
 import { makeField } from '../utils';
+import { getRandomShips } from './ships';
+import { BOT_ID } from '../const';
 
 export type FieldCell = {
   hasShip: boolean;
@@ -16,7 +18,9 @@ export interface IGame {
   turnId: number;
   id: number;
   finished: boolean;
+  singlePlay: boolean;
   winnerId?: number;
+  userIds: number[];
   players: Record<number, GamePlayer>;
 }
 export class Game implements IGame {
@@ -24,18 +28,31 @@ export class Game implements IGame {
   public turnId: number;
   public finished = false;
   public winnerId?: number = undefined;
+
+  get userIds() {
+    return Object.keys(this.players).map((k) => +k);
+  }
   constructor(
     public id: number,
     players: Record<number, Ship[]>,
+    public singlePlay: boolean = false,
   ) {
     this.players = {};
     this.turnId = +Object.keys(players)[0]!;
     Object.entries(players).forEach(([id, ships]) => {
       this.players[+id] = {
-        ships: ships.map((s) => ({ ...s, killed: false })),
+        ships: Game.enrichShips(ships),
         field: makeField(),
       };
     });
+    if (Object.entries(players).length === 1) this.singlePlay = true;
+    if (this.singlePlay) {
+      this.players[BOT_ID] = {
+        ships: Game.enrichShips(getRandomShips()),
+        field: makeField(),
+      };
+      this.placeShips(this.players[BOT_ID]);
+    }
   }
   setCurrentTurnId(userId: number) {
     this.turnId = userId;
@@ -43,7 +60,7 @@ export class Game implements IGame {
   addShips(userId: number, ships: Ship[]) {
     const gamePlayer = this.players[userId];
     if (gamePlayer) {
-      gamePlayer.ships = ships.map((s) => ({ ...s, killed: false }));
+      gamePlayer.ships = Game.enrichShips(ships);
       this.placeShips(gamePlayer);
     }
     return this;
@@ -83,6 +100,12 @@ export class Game implements IGame {
     }
     return killed ? 'killed' : 'shot';
   }
+
+  private static enrichShips = (
+    ships: Ship[],
+  ): Array<Ship & { killed: boolean }> => {
+    return ships.map((s) => ({ ...s, killed: false }));
+  };
   private placeShips(gamePlayer: GamePlayer) {
     gamePlayer.ships.forEach((ship, index) => {
       const { x, y } = ship.position;

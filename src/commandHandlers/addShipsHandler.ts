@@ -4,6 +4,7 @@ import { WSRequest } from '../types';
 import { IGame } from '../database/GameDb';
 import { wsServer } from '../wsServer';
 import { wsSend, wsTurn } from './utils';
+import { BOT_ID } from '../const';
 
 export const addShipsHandler = (
   _: WebSocket,
@@ -18,9 +19,14 @@ export const addShipsHandler = (
     return Object.values(game.players).every((p) => !!p.ships.length);
   };
   if (!game || !isGameReady(game)) return;
-  const currentPlayerIndex = Math.random() > 0.5 ? 1 : 0;
-  const currentPlayerId = Object.keys(game.players)[currentPlayerIndex];
-  const userIds = Object.keys(game.players).map((k) => +k);
+  let currentPlayerId: number | string;
+  if (game.singlePlay) {
+    currentPlayerId = game.userIds.find((id) => id !== BOT_ID)!;
+  } else {
+    const currentPlayerIndex = Math.random() > 0.5 ? 1 : 0;
+    currentPlayerId = Object.keys(game.players)[currentPlayerIndex]!;
+  }
+  const userIds = game.userIds;
   wsServer.clients.forEach((client) => {
     const user = databaseInstance.getUserByWs(client);
     if (userIds.includes(user.id)) {

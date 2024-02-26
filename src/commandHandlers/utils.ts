@@ -60,7 +60,7 @@ export const getRandomPosition = (field: Field): Position => {
 };
 
 export const wsFinished = (game: IGame) => {
-  const userIds = Object.keys(game.players).map((k) => +k);
+  const userIds = game.userIds;
   wsServer.clients.forEach((client) => {
     const user = databaseInstance.getUserByWs(client);
     if (!userIds.includes(user.id)) return;
@@ -77,3 +77,20 @@ export const wsFinished = (game: IGame) => {
     }
   });
 };
+
+export const sendCreateGame = (
+  client: WebSocket,
+  idGame: number,
+  idPlayer: number,
+) => {
+  wsSend(client, {
+    type: 'create_game',
+    id: 0,
+    data: {
+      idGame,
+      idPlayer,
+    },
+  });
+};
+
+export const makeAttack = () => {};

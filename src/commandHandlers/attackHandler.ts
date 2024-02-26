@@ -1,49 +1,81 @@
 import { WebSocket } from 'ws';
 import { WSRequest } from '../types';
 import { databaseInstance } from '../database';
-import { wsFinished, wsSend, wsTurn, wsUpdateWinners } from './utils';
+import {
+  getRandomPosition,
+  wsFinished,
+  wsSend,
+  wsTurn,
+  wsUpdateWinners,
+} from './utils';
 import { wsServer } from '../wsServer';
+import { BOT_ID } from '../const';
 
 export const attackHandler = (ws: WebSocket, request: WSRequest<'attack'>) => {
-  const game = databaseInstance.getGame(request.data.gameId);
+  const { gameId, x, y, indexPlayer } = request.data;
+  const game = databaseInstance.getGame(gameId);
   if (!game) return;
   if (game.finished) return wsFinished(game);
-  const userIds = Object.keys(game.players).map((k) => +k);
 
-  const position = { x: request.data.x, y: request.data.y };
-  if (game.turnId !== request.data.indexPlayer) return;
-  const status = databaseInstance.attack(
-    request.data.gameId,
-    request.data.indexPlayer,
-    position,
-  );
+  const userIds = game.userIds;
+  if (game.turnId !== indexPlayer) return;
+  const position = { x, y };
+  const status = databaseInstance.attack(gameId, indexPlayer, position);
   if (!status) return;
   if (game.finished) {
-    databaseInstance.updateWinner(game.winnerId!);
-    wsUpdateWinners();
+    if (!game.singlePlay) {
+      databaseInstance.updateWinner(game.winnerId!);
+      wsUpdateWinners();
+    }
     return wsFinished(game);
   }
-  const nextUserId =
+  let nextUserId =
     status === 'miss'
-      ? userIds.find((id) => +id !== +request.data.indexPlayer)
-      : request.data.indexPlayer;
-
+      ? userIds.find((id) => +id !== +indexPlayer)
+      : indexPlayer;
+  if (nextUserId != null) {
+    game.setCurrentTurnId(+nextUserId);
+  }
   wsServer.clients.forEach((client) => {
-    const user = databaseInstance.getUserByWs(ws);
-    if (!userIds.includes(user.id)) return;
+    const currentUser = databaseInstance.getUserByWs(ws);
+    if (!userIds.includes(currentUser.id)) return;
 
     wsSend(client, {
       type: 'attack',
       id: 0,
       data: {
         position,
-        currentPlayer: user.id,
+        currentPlayer: indexPlayer,
         status,
       },
     });
+    wsTurn(client, game.turnId);
+  });
+
+  while (nextUserId === BOT_ID) {
+    const victimId = indexPlayer;
+    const field = game.players[victimId]!.field;
+    const position = getRandomPosition(field);
+    const status = databaseInstance.attack(gameId, BOT_ID, position);
+    if (!status) return;
+    if (game.finished) {
+      databaseInstance.updateWinner(game.winnerId!);
+      wsUpdateWinners();
+      return wsFinished(game);
+    }
+    nextUserId = status === 'miss' ? indexPlayer : BOT_ID;
     if (nextUserId != null) {
       game.setCurrentTurnId(+nextUserId);
-      wsTurn(client, +nextUserId);
     }
-  });
+    wsSend(ws, {
+      type: 'attack',
+      id: 0,
+      data: {
+        position,
+        currentPlayer: BOT_ID,
+        status,
+      },
+    });
+    wsTurn(ws, game.turnId);
+  }
 };
